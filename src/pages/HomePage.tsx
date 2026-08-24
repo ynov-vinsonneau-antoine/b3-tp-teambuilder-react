@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import Compteur from "../components/Compteur";
 
 const HomePage = () => {
   return (
@@ -28,21 +29,22 @@ const HomePage = () => {
           </Link>
         </div>
       </section>
+      <Compteur />
 
       <section className="grid gap-4 md:grid-cols-3">
         <article className="rounded-2xl border border-slate-800 bg-slate-900/60 p-6">
           <h2 className="font-semibold text-slate-50">Tous les champions</h2>
           <p className="mt-2 text-sm leading-relaxed text-slate-400">
-            Le roster complet, avec le rôle, le titre et la difficulté de chacun.
-            Filtrez, cherchez, comparez.
+            Le roster complet, avec le rôle, le titre et la difficulté de
+            chacun. Filtrez, cherchez, comparez.
           </p>
         </article>
 
         <article className="rounded-2xl border border-slate-800 bg-slate-900/60 p-6">
           <h2 className="font-semibold text-slate-50">Cinq slots</h2>
           <p className="mt-2 text-sm leading-relaxed text-slate-400">
-            Ajoutez, retirez, recommencez. Votre composition vous suit d'une page
-            à l'autre.
+            Ajoutez, retirez, recommencez. Votre composition vous suit d'une
+            page à l'autre.
           </p>
         </article>
 

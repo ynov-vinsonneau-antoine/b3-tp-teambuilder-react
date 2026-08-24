@@ -1,4 +1,6 @@
-const EquipePage = () => {
+import TeamBuilder from "../components/team-builder/TeamBuilder.component";
+
+const TeamPage = () => {
   return (
     <section>
       <header className="mb-8">
@@ -8,11 +10,9 @@ const EquipePage = () => {
         </p>
       </header>
 
-      <p className="rounded-2xl border border-dashed border-slate-800 px-6 py-16 text-center text-sm text-slate-600">
-        Votre équipe est vide.
-      </p>
+      <TeamBuilder />
     </section>
   );
 };
 
-export default EquipePage;
+export default TeamPage;

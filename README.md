@@ -1,4 +1,4 @@
-# Team Builder — le point de départ
+# Team Builder, le point de départ
 
 Projet du cours **State management et asynchrone** (B2 · React & TypeScript).
 
@@ -22,12 +22,13 @@ src/
 ├── App.tsx                  les routes
 ├── components/
 │   ├── layout.tsx           la barre de navigation + <Outlet />
+│   ├── ui/Button.component.tsx   le bouton de l'app
 │   ├── ErrorState.tsx       un écran d'erreur réutilisable
 │   └── BackLink.tsx         un lien « retour »
 └── pages/
     ├── HomePage.tsx         la page d'accueil (finie)
-    ├── ChampionsPage.tsx    vide — c'est ici qu'on travaille
-    ├── EquipePage.tsx       vide — et ici aussi
+    ├── ChampionsPage.tsx    vide, c'est ici qu'on travaille
+    ├── TeamPage.tsx         vide, et ici aussi
     └── NotFoundPage.tsx     la 404 (finie)
 ```
 
