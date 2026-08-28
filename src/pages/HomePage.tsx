@@ -1,5 +1,4 @@
 import { Link } from "react-router-dom";
-import Compteur from "../components/Compteur";
 
 const HomePage = () => {
   return (
@@ -29,7 +28,6 @@ const HomePage = () => {
           </Link>
         </div>
       </section>
-      <Compteur />
 
       <section className="grid gap-4 md:grid-cols-3">
         <article className="rounded-2xl border border-slate-800 bg-slate-900/60 p-6">
