@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
-import type { ChampionType } from "../types/champions.type";
 import ChampionsList from "../components/champions/ChampionsList.component";
+import useTeamStore from "../store/champions.store";
 
 const ChampionsPage = () => {
   const URL =
     "https://ddragon.leagueoflegends.com/cdn/16.16.1/data/fr_FR/champion.json";
-  const [champions, setChampions] = useState<ChampionType[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const { champions, setChampions } = useTeamStore();
 
   useEffect(() => {
     const loadChampions = async () => {

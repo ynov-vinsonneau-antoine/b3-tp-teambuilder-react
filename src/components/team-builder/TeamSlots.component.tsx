@@ -1,8 +1,9 @@
+import type { ChampionType } from "../../types/champions.type";
 import TeamSlot from "./TeamSlot.component";
 
 type TeamSlotsProps = {
-  team: string[];
-  onRemove: (index: number) => void;
+  team: ChampionType[];
+  onRemove: (champion: ChampionType) => void;
 };
 
 const TeamSlots = ({ team, onRemove }: TeamSlotsProps) => {
@@ -17,7 +18,11 @@ const TeamSlots = ({ team, onRemove }: TeamSlotsProps) => {
   return (
     <div className="flex gap-3">
       {[0, 1, 2, 3, 4].map((i) => (
-        <TeamSlot key={i} champion={team[i]} onRemove={() => onRemove(i)} />
+        <TeamSlot
+          key={i}
+          champion={team[i]}
+          onRemove={() => onRemove(team[i])}
+        />
       ))}
     </div>
   );
