@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type { ChampionType } from "../types/champions.type";
 import ChampionsList from "../components/champions/ChampionsList.component";
 
@@ -9,20 +9,23 @@ const ChampionsPage = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const loadChampions = async () => {
-    setLoading(true);
-    setError(null);
-    try {
-      const response = await fetch(URL);
-      if (!response.ok) throw new Error(`Erreur ${response.status}`);
-      const data = await response.json();
-      setChampions(Object.values(data.data));
-    } catch {
-      setError("Impossible de charger les champions.");
-    } finally {
-      setLoading(false);
-    }
-  };
+  useEffect(() => {
+    const loadChampions = async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        const response = await fetch(URL);
+        if (!response.ok) throw new Error(`Erreur ${response.status}`);
+        const data = await response.json();
+        setChampions(Object.values(data.data));
+      } catch {
+        setError("Impossible de charger les champions.");
+      } finally {
+        setLoading(false);
+      }
+    };
+    loadChampions();
+  }, []);
 
   if (loading) return <p className="text-slate-400">Chargement…</p>;
   if (error) return <p className="text-rose-400">{error}</p>;
@@ -38,16 +41,7 @@ const ChampionsPage = () => {
         </p>
       </header>
 
-      {champions.length === 0 ? (
-        <button
-          onClick={loadChampions}
-          className="rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700"
-        >
-          Charger les champions
-        </button>
-      ) : (
-        <ChampionsList champions={champions} />
-      )}
+      <ChampionsList champions={champions} />
     </section>
   );
 };
