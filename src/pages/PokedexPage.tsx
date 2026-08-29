@@ -9,6 +9,7 @@ import Loader from "../components/ui/Loader.component";
 import ErrorMessage from "../components/ui/ErrorMessage.component";
 import SearchInput from "../components/pokedex/SearchInput.component";
 import TypeFilter from "../components/pokedex/TypeFilter.component";
+import RegionFilter from "../components/pokedex/RegionFilter.component";
 import PokemonGrid from "../components/pokedex/PokemonGrid.component";
 
 const PokedexPage = () => {
@@ -17,9 +18,13 @@ const PokedexPage = () => {
   const [error, setError] = useState<string | null>(null);
 
   const [search, setSearch] = useState("");
+
+  // Pour les deux filtres, `null` signifie « aucun filtre actif ».
   const [selectedTypes, setSelectedTypes] = useState<string[]>([]);
-  // null signifie « aucun filtre de type actif ».
   const [namesByType, setNamesByType] = useState<string[] | null>(null);
+
+  const [selectedRegion, setSelectedRegion] = useState<number | null>(null);
+  const [namesByRegion, setNamesByRegion] = useState<string[] | null>(null);
 
   // Premier effet : la liste complète, une seule fois, au chargement.
   useEffect(() => {
@@ -87,6 +92,33 @@ const PokedexPage = () => {
     loadNamesByType();
   }, [selectedTypes]);
 
+  // Troisième effet : les noms des Pokémon de la région choisie.
+  // Même mécanique que pour les types, avec un autre endpoint.
+  useEffect(() => {
+    const loadNamesByRegion = async () => {
+      if (selectedRegion === null) {
+        setNamesByRegion(null);
+        return;
+      }
+
+      try {
+        const response = await fetch(`${API_URL}/generation/${selectedRegion}`);
+        if (!response.ok) throw new Error(`Erreur ${response.status}`);
+
+        const data = await response.json();
+        const namesOfRegion: string[] = data.pokemon_species.map(
+          (species: PokemonListItemType) => species.name
+        );
+
+        setNamesByRegion(namesOfRegion);
+      } catch {
+        setError("Impossible de charger la région.");
+      }
+    };
+
+    loadNamesByRegion();
+  }, [selectedRegion]);
+
   const toggleType = (type: string) => {
     setSelectedTypes((currentTypes) => {
       // Déjà sélectionné : on l'enlève.
@@ -110,20 +142,38 @@ const PokedexPage = () => {
     .filter((pokemon) => pokemon.name.includes(search.toLowerCase()))
     .filter(
       (pokemon) => namesByType === null || namesByType.includes(pokemon.name)
+    )
+    .filter(
+      (pokemon) =>
+        namesByRegion === null || namesByRegion.includes(pokemon.name)
     );
 
   return (
     <section>
       <header className="mb-6">
-        <h1 className="text-4xl font-bold tracking-tight text-gray-900">Pokédex</h1>
+        <h1 className="text-4xl font-bold tracking-tight text-gray-900">
+          Pokédex
+        </h1>
         <p className="mt-1 text-sm text-gray-500">
-          Cherchez, filtrez par types, puis ouvrez une fiche.
+          Cherchez, filtrez par région et par types, puis ouvrez une fiche.
         </p>
       </header>
 
-      <div className="mb-5 flex flex-col gap-3">
+      <div className="mb-5 flex flex-col gap-4">
         <SearchInput search={search} onSearchChange={setSearch} />
-        <TypeFilter selectedTypes={selectedTypes} onToggleType={toggleType} />
+
+        <div>
+          <p className="mb-2 text-xs font-semibold text-gray-500">Région</p>
+          <RegionFilter
+            selectedRegion={selectedRegion}
+            onSelectRegion={setSelectedRegion}
+          />
+        </div>
+
+        <div>
+          <p className="mb-2 text-xs font-semibold text-gray-500">Types</p>
+          <TypeFilter selectedTypes={selectedTypes} onToggleType={toggleType} />
+        </div>
       </div>
 
       <p className="mb-3 text-xs text-gray-500">

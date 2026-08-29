@@ -18,9 +18,9 @@ Vite, TypeScript, Tailwind CSS, React Router et Zustand sont déjà installés.
 
 | Route | Page | Ce qu'elle fait |
 | --- | --- | --- |
-| `/` | `PokedexPage` | La liste complète, une recherche par nom, un filtre par types (deux au maximum) |
+| `/` | `PokedexPage` | La liste complète, une recherche par nom, un filtre par région et par types (deux au maximum) |
 | `/pokemon/:name` | `PokemonDetailPage` | La fiche : artwork, nom français, catégorie, description, statistiques, ajout à l'équipe |
-| `/equipe` | `TeamPage` | Les six emplacements et le récapitulatif des types |
+| `/equipe` | `TeamPage` | Les six emplacements, les types couverts et les faiblesses de l'équipe |
 
 ## Les appels à l'API
 
@@ -29,7 +29,8 @@ Tout est public, sans clé. Préfixe : `https://pokeapi.co/api/v2`
 | Appel | Poids | Utilisé par |
 | --- | --- | --- |
 | `/pokemon?limit=1400` | 93 Ko | `PokedexPage`, une seule fois au chargement |
-| `/type/{nom}` | ~40 Ko | `PokedexPage`, un appel par type sélectionné |
+| `/type/{nom}` | ~40 Ko | `PokedexPage` (filtre) et `TeamWeaknesses` (damage_relations) |
+| `/generation/{id}` | ~24 Ko | `PokedexPage`, les espèces d'une région |
 | `/pokemon/{nom}` | 290 Ko | `PokemonDetailPage` |
 | `/pokemon-species/{id}` | 50 Ko | `PokemonDetailPage`, pour le nom et la description en français |
 
@@ -49,7 +50,7 @@ src/
 │   ├── ui/                       Button, Loader, ErrorMessage, TypeBadge
 │   ├── pokedex/                  SearchInput, TypeFilter, PokemonCard, PokemonGrid
 │   ├── pokemon/                  StatBar, TeamToggleButton
-│   └── team/                     TeamSlot, TeamSlots, TeamRecap
+│   └── team/                     TeamSlot, TeamSlots, TeamRecap, TeamWeaknesses
 └── pages/                        PokedexPage, PokemonDetailPage, TeamPage, NotFoundPage
 ```
 
@@ -71,7 +72,9 @@ leurs types représenterait 17 Mo. Les types viennent de `/type/`, jamais du dé
 Aucune valeur calculable n'est rangée dans un `useState` :
 
 - la liste filtrée de `PokedexPage` se recalcule à chaque affichage ;
-- les types couverts et absents de `TeamRecap` aussi.
+- les types couverts et absents de `TeamRecap` aussi ;
+- les faiblesses de `TeamWeaknesses` sont recalculées à chaque affichage, à partir
+  des relations de dégâts chargées une fois par type présent dans l'équipe.
 
 Un seul `useState` porte la recherche : le texte tapé. Le reste s'en déduit.
 

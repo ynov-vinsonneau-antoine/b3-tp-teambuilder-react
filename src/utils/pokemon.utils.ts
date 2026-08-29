@@ -3,6 +3,20 @@ export const API_URL = "https://pokeapi.co/api/v2";
 const SPRITES_URL =
   "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon";
 
+// Les régions du jeu. Chacune correspond à une génération, et
+// /generation/{id} donne la liste des espèces qui y apparaissent.
+export const REGIONS = [
+  { generation: 1, label: "Kanto" },
+  { generation: 2, label: "Johto" },
+  { generation: 3, label: "Hoenn" },
+  { generation: 4, label: "Sinnoh" },
+  { generation: 5, label: "Unys" },
+  { generation: 6, label: "Kalos" },
+  { generation: 7, label: "Alola" },
+  { generation: 8, label: "Galar" },
+  { generation: 9, label: "Paldea" },
+];
+
 // On ne cumule jamais plus de deux types dans le filtre.
 export const MAX_SELECTED_TYPES = 2;
 

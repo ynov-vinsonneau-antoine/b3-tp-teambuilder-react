@@ -1,6 +1,7 @@
 import useTeamStore, { MAX_TEAM_SIZE } from "../store/team.store";
 import TeamSlots from "../components/team/TeamSlots.component";
 import TeamRecap from "../components/team/TeamRecap.component";
+import TeamWeaknesses from "../components/team/TeamWeaknesses.component";
 
 const TeamPage = () => {
   const { team } = useTeamStore();
@@ -19,6 +20,7 @@ const TeamPage = () => {
 
       <TeamSlots />
       <TeamRecap />
+      <TeamWeaknesses />
     </section>
   );
 };
