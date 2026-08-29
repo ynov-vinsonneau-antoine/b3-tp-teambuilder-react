@@ -1,9 +1,9 @@
-# Team Builder, le point de départ
+# Pokédex — TP de consommation d'API
 
 Projet du cours **State management et asynchrone** (B2 · React & TypeScript).
 
-Vous allez construire une application qui compose une équipe de cinq champions de
-League of Legends, et qui vous dit ce qu'elle vaut.
+Trois pages, un store, et les données de [PokéAPI](https://pokeapi.co) : un Pokédex
+cherchable et filtrable, une fiche détaillée, et une équipe de six.
 
 ## Démarrer
 
@@ -12,63 +12,72 @@ npm install
 npm run dev
 ```
 
-Le projet est déjà câblé : Vite, TypeScript, Tailwind CSS et React Router.
-**Il n'y a rien à configurer.** On code.
+Vite, TypeScript, Tailwind CSS, React Router et Zustand sont déjà installés.
 
-## Ce qui est déjà là
+## Les trois pages
+
+| Route | Page | Ce qu'elle fait |
+| --- | --- | --- |
+| `/` | `PokedexPage` | La liste complète, une recherche par nom, un filtre par types (deux au maximum) |
+| `/pokemon/:name` | `PokemonDetailPage` | La fiche : artwork, nom français, catégorie, description, statistiques, ajout à l'équipe |
+| `/equipe` | `TeamPage` | Les six emplacements et le récapitulatif des types |
+
+## Les appels à l'API
+
+Tout est public, sans clé. Préfixe : `https://pokeapi.co/api/v2`
+
+| Appel | Poids | Utilisé par |
+| --- | --- | --- |
+| `/pokemon?limit=1400` | 93 Ko | `PokedexPage`, une seule fois au chargement |
+| `/type/{nom}` | ~40 Ko | `PokedexPage`, un appel par type sélectionné |
+| `/pokemon/{nom}` | 290 Ko | `PokemonDetailPage` |
+| `/pokemon-species/{id}` | 50 Ko | `PokemonDetailPage`, pour le nom et la description en français |
+
+Les images ne coûtent **aucun appel** : leur url se déduit de l'id du Pokémon,
+cf. `src/utils/pokemon.utils.ts`.
+
+## Structure
 
 ```
 src/
-├── App.tsx                  les routes
+├── App.tsx                       les routes
+├── types/pokemon.type.ts         les formes renvoyées par l'API
+├── utils/pokemon.utils.ts        url de l'API, urls des images, les 18 types
+├── store/team.store.ts           l'équipe, en Zustand
 ├── components/
-│   ├── layout.tsx           la barre de navigation + <Outlet />
-│   ├── ui/Button.component.tsx   le bouton de l'app
-│   ├── ErrorState.tsx       un écran d'erreur réutilisable
-│   └── BackLink.tsx         un lien « retour »
-└── pages/
-    ├── HomePage.tsx         la page d'accueil (finie)
-    ├── ChampionsPage.tsx    vide, c'est ici qu'on travaille
-    ├── TeamPage.tsx         vide, et ici aussi
-    └── NotFoundPage.tsx     la 404 (finie)
+│   ├── Layout.component.tsx      navigation + <Outlet />
+│   ├── ui/                       Button, Loader, ErrorMessage, TypeBadge
+│   ├── pokedex/                  SearchInput, TypeFilter, PokemonCard, PokemonGrid
+│   ├── pokemon/                  StatBar, TeamToggleButton
+│   └── team/                     TeamSlot, TeamSlots, TeamRecap
+└── pages/                        PokedexPage, PokemonDetailPage, TeamPage, NotFoundPage
 ```
 
-Les deux pages vides contiennent des commentaires qui disent, étape par étape, ce
-qui viendra s'y ajouter. Suivez le cours, ils se rempliront tout seuls.
+## Les trois pièges du sujet
 
-## L'API
+**PokéAPI n'a pas de recherche côté serveur.** Aucun `?q=`. On charge les 1302 noms
+une seule fois, puis on filtre au rendu. C'est ce qui rend la recherche instantanée :
+il n'y a aucun réseau entre la frappe et l'affichage.
 
-**Data Dragon**, le CDN public de Riot. Aucune clé, aucun compte, aucune inscription.
+**L'id n'est pas la position dans la liste.** Les ids vont de 1 à 1025, puis sautent
+à 10001–10326 pour les formes alternatives. Il faut le lire dans l'`url` que la liste
+fournit — c'est le rôle de `getIdFromUrl`.
 
+**Une fiche pèse 290 Ko.** Charger le détail des 60 Pokémon affichés pour connaître
+leurs types représenterait 17 Mo. Les types viennent de `/type/`, jamais du détail.
+
+## Ce qui n'est stocké nulle part
+
+Aucune valeur calculable n'est rangée dans un `useState` :
+
+- la liste filtrée de `PokedexPage` se recalcule à chaque affichage ;
+- les types couverts et absents de `TeamRecap` aussi.
+
+Un seul `useState` porte la recherche : le texte tapé. Le reste s'en déduit.
+
+## Vérifier
+
+```bash
+npm run lint
+npm run build
 ```
-https://ddragon.leagueoflegends.com/cdn/16.16.1/data/fr_FR/champion.json
-https://ddragon.leagueoflegends.com/cdn/16.16.1/img/champion/Ahri.png
-```
-
-Collez la première URL dans un onglet de votre navigateur avant d'écrire la moindre
-ligne. **Regardez la forme de la réponse.** Elle n'est pas celle que vous imaginez.
-
-> ⚠️ L'API officielle de Riot (`api.riotgames.com`) est une autre chose : elle exige
-> une clé **et** refuse les requêtes venant du navigateur. N'y allez pas.
-
-## Le programme
-
-| | Étape | Ce qu'on y apprend |
-|---|---|---|
-| 1 | Le state | `useState`, et pourquoi une variable normale ne suffit pas |
-| 2 | L'appel API | `fetch`, `async` / `await`, `.json()` |
-| 3 | Loading et erreurs | `try` / `catch` / `finally`, et `if (!res.ok)` |
-| 4 | `useEffect` | charger sans bouton, et le tableau de dépendances |
-| 5 | Zustand | une équipe qui survit au changement de page |
-
-## Les commandes
-
-| | |
-|---|---|
-| `npm run dev` | le serveur de développement |
-| `npm run build` | vérifie les types **et** construit le site |
-| `npm run lint` | ESLint |
-
-## Un réflexe à prendre dès aujourd'hui
-
-Gardez les **devtools ouverts** en permanence, sur l'onglet **Console** et l'onglet
-**Réseau**. Les trois quarts des bugs de ce cours s'y voient en quinze secondes.

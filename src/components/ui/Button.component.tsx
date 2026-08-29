@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 
-type ButtonVariant = "primary" | "danger";
+type ButtonVariant = "primary" | "secondary";
 
 type ButtonProps = {
   children: ReactNode;
@@ -10,8 +10,8 @@ type ButtonProps = {
 };
 
 const variants: Record<ButtonVariant, string> = {
-  primary: "bg-violet-500 px-5 py-2 text-sm hover:bg-violet-400",
-  danger: "bg-rose-500/90 px-2 py-0.5 text-xs hover:bg-rose-400",
+  primary: "bg-red-600 text-white hover:bg-red-500",
+  secondary: "border border-red-300 bg-white text-red-600 hover:bg-red-50",
 };
 
 const Button = ({
@@ -24,7 +24,7 @@ const Button = ({
     <button
       onClick={onClick}
       disabled={disabled}
-      className={`cursor-pointer rounded-lg font-semibold text-white transition-colors disabled:cursor-not-allowed disabled:bg-slate-800 disabled:text-slate-600 ${variants[variant]}`}
+      className={`cursor-pointer rounded-lg px-5 py-2 text-sm font-semibold transition-colors disabled:cursor-not-allowed disabled:border-gray-200 disabled:bg-gray-200 disabled:text-gray-400 ${variants[variant]}`}
     >
       {children}
     </button>

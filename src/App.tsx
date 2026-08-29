@@ -1,23 +1,21 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Layout from "./components/layout";
-import HomePage from "./pages/HomePage";
-import ChampionsPage from "./pages/ChampionsPage";
+import Layout from "./components/Layout.component";
+import PokedexPage from "./pages/PokedexPage";
+import PokemonDetailPage from "./pages/PokemonDetailPage";
 import TeamPage from "./pages/TeamPage";
 import NotFoundPage from "./pages/NotFoundPage";
 
 const App = () => {
   return (
     <BrowserRouter>
-      <div className="flex min-h-screen flex-col bg-slate-950 p-8">
-        <Routes>
-          <Route path="/" element={<Layout />}>
-            <Route index element={<HomePage />} />
-            <Route path="champions" element={<ChampionsPage />} />
-            <Route path="equipe" element={<TeamPage />} />
-            <Route path="*" element={<NotFoundPage />} />
-          </Route>
-        </Routes>
-      </div>
+      <Routes>
+        <Route path="/" element={<Layout />}>
+          <Route index element={<PokedexPage />} />
+          <Route path="pokemon/:name" element={<PokemonDetailPage />} />
+          <Route path="equipe" element={<TeamPage />} />
+          <Route path="*" element={<NotFoundPage />} />
+        </Route>
+      </Routes>
     </BrowserRouter>
   );
 };
